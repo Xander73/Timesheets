@@ -1,16 +1,18 @@
-﻿namespace Timesheets.DB.DAL
+﻿
+
+namespace Timesheets.DB.DAL
 {
     public interface IBaseRepo<T>
     {
-        List<T> GetAll();
+        Task<IEnumerable<T>> GetAllAsync();
         
 
-        int AddItem(T item);
+        Task AddItemAsync(T item);
 
 
-        int UpdateItem(T item);
+        Task UpdateItemAsync(T item);
 
 
-        void DeleteItem(int id);
+        Task DeleteItemAsync(Guid id);
     }
 }

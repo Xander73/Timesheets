@@ -1,4 +1,4 @@
-﻿using Core.Model;
+﻿using Core.Models.Entities;
 using Timesheets.DB.DAL.Interfaces;
 
 namespace Timesheets.DB.DAL.Implementation
@@ -67,21 +67,38 @@ namespace Timesheets.DB.DAL.Implementation
             return data.Last().Id;
         }
 
+        public Task AddItemAsync(Person item)
+        {
+            throw new NotImplementedException();
+        }
 
         public void DeleteItem(int id)
         {
             data.Remove(data.Where(i => i.Id == id).FirstOrDefault());
         }
 
+        public Task DeleteItemAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
 
         public List<Person> GetAll() => data;
 
+        public Task<IEnumerable<Person>> GetAllAsync()
+        {
+            throw new NotImplementedException();
+        }
 
         public int UpdateItem(Person item)
         {
             int index = data.IndexOf(data.Where(x => x.Id == item.Id).FirstOrDefault());
             data[index] = item;
             return data[index].Id;
+        }
+
+        public Task UpdateItemAsync(Person item)
+        {
+            throw new NotImplementedException();
         }
     }
 }
