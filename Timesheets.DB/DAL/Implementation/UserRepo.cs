@@ -15,14 +15,14 @@ namespace Timesheets.DB.DAL.Implementation
             _db = db;
         }
 
-        public async Task AddItemAsync(User item)
+        public async Task AddItemAsync(User item, CancellationToken token)
         {
             _db.Users.Add(item);
             await _db.SaveChangesAsync();
         }
 
 
-        public async Task DeleteItemAsync(Guid id)
+        public async Task DeleteItemAsync(Guid id, CancellationToken token)
         {
             var item = _db.Users.FirstOrDefault(u => u.Id == id);
             item.IsDeleted = true;
@@ -30,13 +30,13 @@ namespace Timesheets.DB.DAL.Implementation
         }
 
 
-        public async Task<IEnumerable<User>> GetAllAsync()
+        public async Task<IEnumerable<User>> GetAllAsync(CancellationToken token)
         {
             return await _db.Users.ToListAsync();
         }
 
 
-        public async Task UpdateItemAsync(User item)
+        public async Task UpdateItemAsync(User item, CancellationToken token)
         {
             var itemDb = _db.Users.FirstOrDefault(u => u.Id == item.Id);
             itemDb.Comment = item.Comment;

@@ -16,25 +16,25 @@ namespace Timesheets.DB.DAL.Implementation
         }
 
 
-        public async Task AddItemAsync(Employee item)
+        public async Task AddItemAsync(Employee item, CancellationToken token)
         {
             _db.Employees.Add(item);
             await _db.SaveChangesAsync();
         }
 
-        public async Task DeleteItemAsync(Guid id)
+        public async Task DeleteItemAsync(Guid id, CancellationToken token)
         {
             var item = _db.Employees.FirstOrDefault(u => u.Id == id);
             item.IsDeleted = true;
             await _db.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Employee>> GetAllAsync()
+        public async Task<IEnumerable<Employee>> GetAllAsync(CancellationToken token)
         {
             return await _db.Employees.ToListAsync();
         }
 
-        public async Task UpdateItemAsync(Employee item)
+        public async Task UpdateItemAsync(Employee item, CancellationToken token)
         {
             var employee = _db.Employees.FirstOrDefault(u => u.Id == item.Id);
             employee.Position = item.Position;

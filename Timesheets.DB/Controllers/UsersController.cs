@@ -24,14 +24,14 @@ namespace Timesheets.DB.Controllers
 
         // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers(CancellationToken token)
         {
             return await _context.Users.ToListAsync();
         }
 
         // GET: api/Users/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(Guid id)
+        public async Task<ActionResult<User>> GetUser(Guid id, CancellationToken token)
         {
             var user = await _context.Users.FindAsync(id);
 
@@ -46,7 +46,7 @@ namespace Timesheets.DB.Controllers
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(Guid id, User user)
+        public async Task<IActionResult> PutUser(Guid id, User user, CancellationToken token)
         {
             if (id != user.Id)
             {
@@ -77,8 +77,9 @@ namespace Timesheets.DB.Controllers
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<ActionResult<User>> PostUser(User user, CancellationToken token)
         {
+            user.Id = Guid.NewGuid();
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
@@ -87,7 +88,7 @@ namespace Timesheets.DB.Controllers
 
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(Guid id)
+        public async Task<IActionResult> DeleteUser(Guid id, CancellationToken token)
         {
             var user = await _context.Users.FindAsync(id);
             if (user == null)

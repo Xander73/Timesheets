@@ -24,14 +24,14 @@ namespace Timesheets.DB.Controllers
 
         // GET: api/Employees
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
+        public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees(CancellationToken token)
         {
             return await _context.Employees.ToListAsync();
         }
 
         // GET: api/Employees/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Employee>> GetEmployee(Guid id)
+        public async Task<ActionResult<Employee>> GetEmployee(Guid id, CancellationToken token)
         {
             var employee = await _context.Employees.FindAsync(id);
 
@@ -46,7 +46,7 @@ namespace Timesheets.DB.Controllers
         // PUT: api/Employees/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEmployee(Guid id, Employee employee)
+        public async Task<IActionResult> PutEmployee(Guid id, Employee employee, CancellationToken token)
         {
             if (id != employee.Id)
             {
@@ -77,8 +77,9 @@ namespace Timesheets.DB.Controllers
         // POST: api/Employees
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Employee>> PostEmployee(Employee employee)
+        public async Task<ActionResult<Employee>> PostEmployee(Employee employee, CancellationToken token)
         {
+            employee.Id = Guid.NewGuid();
             _context.Employees.Add(employee);
             await _context.SaveChangesAsync();
 
@@ -87,7 +88,7 @@ namespace Timesheets.DB.Controllers
 
         // DELETE: api/Employees/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEmployee(Guid id)
+        public async Task<IActionResult> DeleteEmployee(Guid id, CancellationToken token)
         {
             var employee = await _context.Employees.FindAsync(id);
             if (employee == null)
