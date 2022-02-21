@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace Timesheets.DB.DAL
 {
-    public interface IBaseRepo<T>
+    public interface IBaseRepo<T> where T : class
     {
         Task<IEnumerable<T>> GetAllAsync(CancellationToken token);
         

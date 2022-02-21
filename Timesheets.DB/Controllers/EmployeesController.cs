@@ -71,7 +71,7 @@ namespace Timesheets.DB.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok();
         }
 
         // POST: api/Employees
@@ -99,7 +99,7 @@ namespace Timesheets.DB.Controllers
             _context.Employees.Remove(employee);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok();
         }
 
         private bool EmployeeExists(Guid id)

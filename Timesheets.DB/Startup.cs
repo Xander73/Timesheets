@@ -20,7 +20,9 @@ namespace Timesheets.DB
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            //services.AddSingleton<IPersonRepo, PersonRepo>();
+            services.AddSingleton<IPersonRepo, PersonRepo>();
+            services.AddScoped<IEmployeeRepo, EmployeeRepo>();
+            services.AddScoped<IUserRepo, UserRepo>();
             var connectionString = Configuration.GetConnectionString("MyDbConnection");
             services.AddDbContext<MyDbContext>(options => options.UseSqlite(connectionString));
             services.AddSwaggerGen(c =>
