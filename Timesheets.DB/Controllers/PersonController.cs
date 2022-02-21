@@ -31,35 +31,43 @@ namespace Timesheets.DB.Controllers
             [FromRoute] int id,
             CancellationToken token)
         {
-            Person person = _personRepo.GetAll().Where(x => x.Id == id).FirstOrDefault();
+            Person person = _personRepo.Get(id);
 
-            return Ok(person);
+            if (person != null)
+            {
+                return Ok(person);
+            }
+            return NoContent();
         }
 
 
-        ////Из за этого такого типа запросв не запускается сваггер
-        //[HttpGet("persons/search?searchTerm={term}")]
-        //public async Task<ActionResult<Person>> GetPersonTerm(
-        //    [FromRoute] string term,
-        //    CancellationToken token)
-        //{
-        //    Person person = _personRepo.GetAll().Where(x => x.FirstName == term).FirstOrDefault();
+        //Из за этого такого типа запросв не запускается сваггер
+        [HttpGet("persons/search?searchTerm={term}")]
+        public async Task<ActionResult<Person>> GetPersonTerm(
+            [FromQuery] string term,
+            CancellationToken token)
+        {
+            Person person = _personRepo.GetAll().Where(x => x.FirstName == term).FirstOrDefault();
 
-        //    return Ok(person);
-        //}
+            if (person != null)
+            {
+                return Ok(person);
+            }
+            return NoContent();
+        }
 
 
-        ////И этот тоже не запускается сваггер
-        //[HttpGet("persons/?skip={skip}&take={take}")]
-        //public async Task<ActionResult<IEnumerable<Person>>> GetPersons(
-        //    [FromRoute] int skip,
-        //    [FromRoute] int take,
-        //    CancellationToken token)
-        //{
-        //    var person = _personRepo.GetAll().Skip(skip).Take(take);
-
-        //    return Ok(person);
-        //}
+        //И этот тоже не запускается сваггер
+        [HttpGet("persons/?skip={skip}&take={take}")]
+        public async Task<ActionResult<IEnumerable<Person>>> GetSomePersons(
+            [FromQuery] int skip,
+            [FromQuery] int take,
+            CancellationToken token)
+        {
+            IEnumerable<Person>  persons = _personRepo.GetSomePersons(skip, take);
+            return Ok(persons);
+            
+        }
 
 
         [HttpPost("persons")]
@@ -79,6 +87,10 @@ namespace Timesheets.DB.Controllers
             CancellationToken token)
         {
             int id = _personRepo.UpdateItem(person);
+            if (id != 0)
+            {
+                return Ok(id);
+            }
             return Ok(id);
         }
 
