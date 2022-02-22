@@ -1,5 +1,4 @@
 ﻿using Core.Models.Entities;
-using Microsoft.EntityFrameworkCore;
 using Timesheets.DB.DAL.Context;
 using Timesheets.DB.DAL.Interfaces;
 
@@ -7,7 +6,7 @@ namespace Timesheets.DB.DAL.Implementation
 {
     public class UserRepo : IUserRepo
     {
-        MyDbContext _db;
+        private MyDbContext _db;
 
 
         public UserRepo(MyDbContext db)
@@ -15,37 +14,70 @@ namespace Timesheets.DB.DAL.Implementation
             _db = db;
         }
 
-        public async Task AddItemAsync(User item, CancellationToken token)
+
+        public Guid AddItem(User item)
         {
             _db.Users.Add(item);
-            await _db.SaveChangesAsync();
+
+            return _db.Users.Last().Id;
         }
 
 
-        public async Task DeleteItemAsync(Guid id, CancellationToken token)
+        public void DeleteItem(Guid id)
         {
-            var item = _db.Users.FirstOrDefault(u => u.Id == id);
-            item.IsDeleted = true;
-            await _db.SaveChangesAsync();
+            User user = Get(id);
+            if (user != null)
+            {
+                user.IsDeleted = true;
+            }
         }
 
 
-        public async Task<IEnumerable<User>> GetAllAsync(CancellationToken token)
+        public List<User> GetAll() => _db.Users.ToList();
+
+
+        public User Get(Guid id)
         {
-            return await _db.Users.ToListAsync();
+            return _db.Users.FirstOrDefault(i => i.Id == id);
         }
 
 
-        public async Task UpdateItemAsync(User item, CancellationToken token)
+        public IEnumerable<User> GetSomePersons(int skip, int take)
         {
-            var itemDb = _db.Users.FirstOrDefault(u => u.Id == item.Id);
-            itemDb.Comment = item.Comment;
-            itemDb.LastName = item.LastName;
-            itemDb.FirstName = item.FirstName;
-            itemDb.MiddleName = item.MiddleName;
-            itemDb.IsDeleted = item.IsDeleted;
+            int usersCount = _db.Users.ToList().Count;
+            IEnumerable<User> users;
+            if (skip < usersCount)
+            {
+                users = _db.Users.Skip(skip).Take(take);
 
-            await _db.SaveChangesAsync();
+                return users;
+            }
+            else
+            {
+                users = _db.Users.Skip(usersCount - take).Take(take);
+                return users;
+            }
+        }
+
+
+        public User GetByTerm(string term)
+        {
+            return _db.Users.FirstOrDefault(i => i.FirstName == term);
+        }
+
+
+        public User UpdateItem(User item)
+        {
+            User user = _db.Users.FirstOrDefault(i => i.Id == item.Id);
+            if (user != null)
+            {
+                user.Comment = item.Comment;
+                user.LastName = item.LastName;
+                user.FirstName = item.FirstName;
+                user.MiddleName = item.MiddleName;
+                user.IsDeleted = item.IsDeleted;
+            }
+            return user;
         }
     }
 }

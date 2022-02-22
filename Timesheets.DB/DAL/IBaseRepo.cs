@@ -6,15 +6,23 @@ namespace Timesheets.DB.DAL
 {
     public interface IBaseRepo<T> where T : class
     {
-        Task<IEnumerable<T>> GetAllAsync(CancellationToken token);
-        
+        Task<IActionResultList<T> GetAll();
 
-        Task AddItemAsync(T item, CancellationToken token);
-
-
-        Task UpdateItemAsync(T item, CancellationToken token);
+        T Get(Guid id);
 
 
-        Task DeleteItemAsync(Guid id, CancellationToken token);
+        T GetByTerm(string term);
+
+
+        IEnumerable<T> GetSomePersons(int skip, int take);
+
+
+        Guid AddItem(T item);
+
+
+        T UpdateItem(T item);
+
+
+        void DeleteItem(Guid id);
     }
 }
