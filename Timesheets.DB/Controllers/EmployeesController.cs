@@ -1,13 +1,7 @@
 ﻿#nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Core.Models.Entities;
-using Timesheets.DB.DAL.Context;
+using Timesheets.DB.DAL.Interfaces;
 
 namespace Timesheets.DB.Controllers
 {
@@ -15,96 +9,74 @@ namespace Timesheets.DB.Controllers
     [ApiController]
     public class EmployeesController : ControllerBase
     {
-        private readonly MyDbContext _context;
+        private readonly IEmployeeRepo _repo;
 
-        public EmployeesController(MyDbContext context)
+        public EmployeesController(IEmployeeRepo repo)
         {
-            _context = context;
-        }
+            _repo = repo;
+        }        
 
-        // GET: api/Employees
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees(CancellationToken token)
         {
-            return await _context.Employees.ToListAsync();
+            IEnumerable<Employee> employee = await _repo.GetAll(token);
+            if (employee == null)
+            {
+                return NotFound();
+            }
+            return Ok(employee);
         }
 
-        // GET: api/Employees/5
+
         [HttpGet("{id}")]
         public async Task<ActionResult<Employee>> GetEmployee(Guid id, CancellationToken token)
         {
-            var employee = await _context.Employees.FindAsync(id);
+            var employee = _repo.Get;
 
             if (employee == null)
             {
                 return NotFound();
             }
 
-            return employee;
+            return Ok(employee);
         }
 
-        // PUT: api/Employees/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+
         [HttpPut("{id}")]
         public async Task<IActionResult> PutEmployee(Guid id, Employee employee, CancellationToken token)
         {
             if (id != employee.Id)
             {
-                return BadRequest();
-            }
-
-            _context.Entry(employee).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!EmployeeExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Ok();
-        }
-
-        // POST: api/Employees
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Employee>> PostEmployee(Employee employee, CancellationToken token)
-        {
-            employee.Id = Guid.NewGuid();
-            _context.Employees.Add(employee);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetEmployee", new { id = employee.Id }, employee);
-        }
-
-        // DELETE: api/Employees/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEmployee(Guid id, CancellationToken token)
-        {
-            var employee = await _context.Employees.FindAsync(id);
-            if (employee == null)
-            {
                 return NotFound();
             }
 
-            _context.Employees.Remove(employee);
-            await _context.SaveChangesAsync();
+            await _repo.UpdateItem(employee, token);
 
             return Ok();
         }
 
-        private bool EmployeeExists(Guid id)
+
+        [HttpPost]
+        public async Task<ActionResult<Employee>> PostUser(Employee employee, CancellationToken token)
         {
-            return _context.Employees.Any(e => e.Id == id);
+            employee.Id = Guid.NewGuid();
+            await _repo.AddItem(employee, token);
+
+            return Ok();
+        }
+
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteEmployee(Guid id, CancellationToken token)
+        {
+            var employeeEntity = await _repo.Get(id, token);
+            if (employeeEntity == null)
+            {
+                return NotFound();
+            }
+            await _repo.DeleteItem(id, token);
+            return Ok();
         }
     }
 }

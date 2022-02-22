@@ -15,37 +15,74 @@ namespace Timesheets.DB.DAL.Implementation
             _db = db;
         }
 
-        public async Task AddItemAsync(User item, CancellationToken token)
+
+        public async Task<Guid> AddItem(User item, CancellationToken token)
         {
-            _db.Users.Add(item);
-            await _db.SaveChangesAsync();
+            _db.Users.AddAsync(item);
+            var addedUserId = await _db.Users.LastAsync();
+
+            return addedUserId.Id;
         }
 
 
-        public async Task DeleteItemAsync(Guid id, CancellationToken token)
+        public async Task DeleteItem(Guid id, CancellationToken token)
         {
-            var item = _db.Users.FirstOrDefault(u => u.Id == id);
-            item.IsDeleted = true;
-            await _db.SaveChangesAsync();
+            User user = await _db.Users.FirstOrDefaultAsync(u => u.Id == id);
+            if (user != null)
+            {
+                user.IsDeleted = true;
+            }
         }
 
 
-        public async Task<IEnumerable<User>> GetAllAsync(CancellationToken token)
+        public async Task<IEnumerable<User>> GetAll(CancellationToken token) => await _db.Users.ToListAsync();
+
+
+        public async Task<User> Get(Guid id, CancellationToken token)
         {
-            return await _db.Users.ToListAsync();
+            return await _db.Users.FirstOrDefaultAsync(i => i.Id == id);
         }
 
 
-        public async Task UpdateItemAsync(User item, CancellationToken token)
+        public async Task<IEnumerable<User>> GetSomePersons(int skip, int take, CancellationToken token)
         {
-            var itemDb = _db.Users.FirstOrDefault(u => u.Id == item.Id);
-            itemDb.Comment = item.Comment;
-            itemDb.LastName = item.LastName;
-            itemDb.FirstName = item.FirstName;
-            itemDb.MiddleName = item.MiddleName;
-            itemDb.IsDeleted = item.IsDeleted;
+            int userCount = await _db.Users.CountAsync();
+            IEnumerable<User> users;
+            if (skip < userCount)
+            {
+                users = _db.Users.Skip(skip).Take(take);
 
-            await _db.SaveChangesAsync();
+                return users;
+            }
+            else
+            {
+                users = _db.Users.Skip(userCount - take).Take(take);
+                return users;
+            }
+        }
+
+
+        public async Task<User> GetByTerm(string term, CancellationToken token)
+        {
+            return await _db.Users.FirstOrDefaultAsync(i => i.FirstName == term);
+        }
+
+
+        public async Task<User> UpdateItem(User item, CancellationToken token)
+        {
+            User user = await _db.Users.FirstOrDefaultAsync(i => i.Id == item.Id);
+            if (user != null)
+            {
+                var itemDb = _db.Users.FirstOrDefault(u => u.Id == item.Id);
+                itemDb.Comment = item.Comment;
+                itemDb.LastName = item.LastName;
+                itemDb.FirstName = item.FirstName;
+                itemDb.MiddleName = item.MiddleName;
+                itemDb.IsDeleted = item.IsDeleted;
+
+                await _db.SaveChangesAsync();
+            }
+            return user;
         }
     }
 }
