@@ -6,9 +6,11 @@ namespace Timesheets.DB.DAL
 {
     public interface IBaseRepo<T> where T : class
     {
-        Task<IActionResultList<T> GetAll();
 
-        T Get(Guid id);
+        List<T> GetAll();
+        
+        T Get(int id);
+main
 
 
         T GetByTerm(string term);

@@ -25,40 +25,50 @@ namespace Timesheets.DB.Controllers
         //}
 
 
-        //[HttpGet("persons/{id}")]
-        //public async Task<ActionResult<Person>> GetPersonId(
-        //    [FromRoute] int id,
-        //    CancellationToken token)
-        //{
-        //    Person person = _personRepo.GetAll().Where(x => x.Id == id).FirstOrDefault();
 
-        //    return Ok(person);
-        //}
+        [HttpGet("persons/{id}")]
+        public async Task<ActionResult<Person>> GetPersonId(
+            [FromRoute] int id,
+            CancellationToken token)
+        {
+            Person person = _personRepo.Get(id);
 
-
-        ////Из за этого такого типа запросв не запускается сваггер
-        //[HttpGet("persons/search?searchTerm={term}")]
-        //public async Task<ActionResult<Person>> GetPersonTerm(
-        //    [FromQuery] string term,
-        //    CancellationToken token)
-        //{
-        //    Person person = _personRepo.GetAll().Where(x => x.FirstName == term).FirstOrDefault();
-
-        //    return Ok(person);
-        //}
+            if (person != null)
+            {
+                return Ok(person);
+            }
+            return NoContent();
+        }
 
 
-        ////И этот тоже не запускается сваггер
-        //[HttpGet("persons/?skip={skip}&take={take}")]
-        //public async Task<ActionResult<IEnumerable<Person>>> GetPersons(
-        //    [FromRoute] int skip,
-        //    [FromRoute] int take,
-        //    CancellationToken token)
-        //{
-        //    var person = _personRepo.GetAll().Skip(skip).Take(take);
+        //Из за этого такого типа запросв не запускается сваггер
+        [HttpGet("persons/search?searchTerm={term}")]
+        public async Task<ActionResult<Person>> GetPersonTerm(
+            [FromQuery] string term,
+            CancellationToken token)
+        {
+            Person person = _personRepo.GetAll().Where(x => x.FirstName == term).FirstOrDefault();
+ main
 
-        //    return Ok(person);
-        //}
+            if (person != null)
+            {
+                return Ok(person);
+            }
+            return NoContent();
+        }
+
+
+        //И этот тоже не запускается сваггер
+        [HttpGet("persons/?skip={skip}&take={take}")]
+        public async Task<ActionResult<IEnumerable<Person>>> GetSomePersons(
+            [FromQuery] int skip,
+            [FromQuery] int take,
+            CancellationToken token)
+        {
+            IEnumerable<Person>  persons = _personRepo.GetSomePersons(skip, take);
+            return Ok(persons);
+            
+        }
 
 
         //[HttpPost("persons")]
@@ -72,14 +82,20 @@ namespace Timesheets.DB.Controllers
         //}
 
 
-        //[HttpPut("persons")]
-        //public async Task<ActionResult<Person>> PutPerson(
-        //    [FromBody] Person person,
-        //    CancellationToken token)
-        //{
-        //    int id = _personRepo.UpdateItem(person);
-        //    return Ok(id);
-        //}
+
+        [HttpPut("persons")]
+        public async Task<ActionResult<Person>> PutPerson(
+            [FromBody] Person person,
+            CancellationToken token)
+        {
+            int id = _personRepo.UpdateItem(person);
+            if (id != 0)
+            {
+                return Ok(id);
+            }
+            return Ok(id);
+        }
+ main
 
 
         //[HttpDelete("{id}")]
