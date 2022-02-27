@@ -90,12 +90,12 @@
 //            throw new NotImplementedException();
 //        }
 
-        public int UpdateItem(Person item)
-        {
-            int index = data.IndexOf(data.Where(x => x.Id == item.Id).FirstOrDefault());
-            data[index] = item;
-            return data[index].Id;
-        }
+        //public int UpdateItem(Person item)
+        //{
+        //    int index = data.IndexOf(data.Where(x => x.Id == item.Id).FirstOrDefault());
+        //    data[index] = item;
+        //    return data[index].Id;
+        //}
 
 //        public Task UpdateItemAsync(Person item, CancellationToken token)
 //        {

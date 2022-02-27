@@ -35,12 +35,12 @@
 //            return Ok(person);
 //        }
 
-            if (person != null)
-            {
-                return Ok(person);
-            }
-            return NoContent();
-        }
+        //    if (person != null)
+        //    {
+        //        return Ok(person);
+        //    }
+        //    return NoContent();
+        //}
 
 //        //Из за этого такого типа запросв не запускается сваггер
 //        [HttpGet("persons/search?searchTerm={term}")]
