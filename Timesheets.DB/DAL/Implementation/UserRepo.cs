@@ -1,4 +1,5 @@
 ﻿using Core.Models.Entities;
+using Microsoft.EntityFrameworkCore;
 using Timesheets.DB.DAL.Context;
 using Timesheets.DB.DAL.Interfaces;
 
@@ -6,7 +7,7 @@ namespace Timesheets.DB.DAL.Implementation
 {
     public class UserRepo : IUserRepo
     {
-        private MyDbContext _db;
+        MyDbContext _db;
 
 
         public UserRepo(MyDbContext db)
@@ -15,23 +16,19 @@ namespace Timesheets.DB.DAL.Implementation
         }
 
 
-        public Guid AddItem(User item)
+        public async Task<Guid> AddItem(User item, CancellationToken token)
         {
-<<<<<<< HEAD
-            _db.Users.Add(item);
-=======
             _db.Users.AddAsync(item);
             await _db.SaveChangesAsync();
             var addedUserId = await _db.Users.LastAsync();
->>>>>>> f379f9d (Add authorization and authotication)
 
-            return _db.Users.Last().Id;
+            return addedUserId.Id;
         }
 
 
-        public void DeleteItem(Guid id)
+        public async Task DeleteItem(Guid id, CancellationToken token)
         {
-            User user = Get(id);
+            User user = await _db.Users.FirstOrDefaultAsync(u => u.Id == id);
             if (user != null)
             {
                 user.IsDeleted = true;
@@ -40,20 +37,20 @@ namespace Timesheets.DB.DAL.Implementation
         }
 
 
-        public List<User> GetAll() => _db.Users.ToList();
+        public async Task<IEnumerable<User>> GetAll(CancellationToken token) => await _db.Users.ToListAsync();
 
 
-        public User Get(Guid id)
+        public async Task<User> Get(Guid id, CancellationToken token)
         {
-            return _db.Users.FirstOrDefault(i => i.Id == id);
+            return await _db.Users.FirstOrDefaultAsync(i => i.Id == id);
         }
 
 
-        public IEnumerable<User> GetSomePersons(int skip, int take)
+        public async Task<IEnumerable<User>> GetSomePersons(int skip, int take, CancellationToken token)
         {
-            int usersCount = _db.Users.ToList().Count;
+            int userCount = await _db.Users.CountAsync();
             IEnumerable<User> users;
-            if (skip < usersCount)
+            if (skip < userCount)
             {
                 users = _db.Users.Skip(skip).Take(take);
 
@@ -61,30 +58,23 @@ namespace Timesheets.DB.DAL.Implementation
             }
             else
             {
-                users = _db.Users.Skip(usersCount - take).Take(take);
+                users = _db.Users.Skip(userCount - take).Take(take);
                 return users;
             }
         }
 
 
-        public User GetByTerm(string term)
+        public async Task<User> GetByTerm(string term, CancellationToken token)
         {
-            return _db.Users.FirstOrDefault(i => i.FirstName == term);
+            return await _db.Users.FirstOrDefaultAsync(i => i.FirstName == term);
         }
 
 
-        public User UpdateItem(User item)
+        public async Task<User> UpdateItem(User item, CancellationToken token)
         {
-            User user = _db.Users.FirstOrDefault(i => i.Id == item.Id);
+            User user = await _db.Users.FirstOrDefaultAsync(i => i.Id == item.Id);
             if (user != null)
             {
-<<<<<<< HEAD
-                user.Comment = item.Comment;
-                user.LastName = item.LastName;
-                user.FirstName = item.FirstName;
-                user.MiddleName = item.MiddleName;
-                user.IsDeleted = item.IsDeleted;
-=======
                 var itemDb = _db.Users.FirstOrDefault(u => u.Id == item.Id);
                 itemDb.Comment = item.Comment;
                 itemDb.LastName = item.LastName;
@@ -95,7 +85,6 @@ namespace Timesheets.DB.DAL.Implementation
                 itemDb.RefreshToken = item.RefreshToken;
 
                 await _db.SaveChangesAsync();
->>>>>>> f379f9d (Add authorization and authotication)
             }
             return user;
         }

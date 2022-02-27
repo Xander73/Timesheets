@@ -26,9 +26,6 @@ namespace Timesheets.DB
         {
             services.AddScoped<IUserService, UserService>();
             services.AddControllers();
-<<<<<<< HEAD
-            services.AddSingleton<IPersonRepo, PersonRepo>();
-=======
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -50,7 +47,6 @@ namespace Timesheets.DB
             services.AddCors();
 
             //services.AddSingleton<IPersonRepo, PersonRepo>();
->>>>>>> f379f9d (Add authorization and authotication)
             services.AddScoped<IEmployeeRepo, EmployeeRepo>();
             services.AddScoped<IUserRepo, UserRepo>();
             var connectionString = Configuration.GetConnectionString("MyDbConnection");

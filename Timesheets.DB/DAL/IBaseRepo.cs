@@ -1,28 +1,26 @@
 ﻿
 
-using System.Threading;
-
 namespace Timesheets.DB.DAL
 {
     public interface IBaseRepo<T> where T : class
     {
-        Task<IActionResultList<T> GetAll();
+        Task<IEnumerable<T>> GetAll(CancellationToken token);
 
-        T Get(Guid id);
-
-
-        T GetByTerm(string term);
+        Task<T> Get(Guid id, CancellationToken token);
 
 
-        IEnumerable<T> GetSomePersons(int skip, int take);
+        Task<T> GetByTerm(string term, CancellationToken token);
 
 
-        Guid AddItem(T item);
+        Task<IEnumerable<T>> GetSomePersons(int skip, int take, CancellationToken token);
 
 
-        T UpdateItem(T item);
+        Task<Guid> AddItem(T item, CancellationToken token);
 
 
-        void DeleteItem(Guid id);
+        Task<T> UpdateItem(T item, CancellationToken token);
+
+
+        Task DeleteItem(Guid id, CancellationToken token);
     }
 }

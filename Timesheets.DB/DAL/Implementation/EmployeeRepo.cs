@@ -16,49 +16,72 @@ namespace Timesheets.DB.DAL.Implementation
         }
 
 
-        public async Task AddItemAsync(Employee item, CancellationToken token)
+        public async Task<Guid> AddItem(Employee item, CancellationToken token)
         {
-<<<<<<< HEAD
-            _db.Employees.Add(item);
-            await _db.SaveChangesAsync();
-=======
             _db.Employees.AddAsync(item);
             var addedEmployeeId = await _db.Employees.LastAsync();
             await _db.SaveChangesAsync();
 
             return addedEmployeeId.Id;
->>>>>>> f379f9d (Add authorization and authotication)
         }
 
-        public async Task DeleteItemAsync(Guid id, CancellationToken token)
+
+        public async Task DeleteItem(Guid id, CancellationToken token)
         {
-<<<<<<< HEAD
-            var item = _db.Employees.FirstOrDefault(u => u.Id == id);
-            item.IsDeleted = true;
-            await _db.SaveChangesAsync();
-=======
             Employee employee = await _db.Employees.FirstOrDefaultAsync(u => u.Id == id);
             if (employee != null)
             {
                 employee.IsDeleted = true;
                 await _db.SaveChangesAsync();
             }
->>>>>>> f379f9d (Add authorization and authotication)
         }
 
-        public async Task<IEnumerable<Employee>> GetAllAsync(CancellationToken token)
+
+        public async Task<IEnumerable<Employee>> GetAll(CancellationToken token) => await _db.Employees.ToListAsync();
+
+
+        public async Task<Employee> Get(Guid id, CancellationToken token)
         {
-            return await _db.Employees.ToListAsync();
+            return await _db.Employees.FirstOrDefaultAsync(i => i.Id == id);
         }
 
-        public async Task UpdateItemAsync(Employee item, CancellationToken token)
-        {
-            var employee = _db.Employees.FirstOrDefault(u => u.Id == item.Id);
-            employee.Position = item.Position;
-            employee.IsDeleted = item.IsDeleted;
-            employee.UserId = item.UserId;            
 
-            await _db.SaveChangesAsync();
+        public async Task<IEnumerable<Employee>> GetSomePersons(int skip, int take, CancellationToken token)
+        {
+            int employeeCount = await _db.Users.CountAsync();
+            IEnumerable<Employee> employees;
+            if (skip < employeeCount)
+            {
+                employees = _db.Employees.Skip(skip).Take(take);
+
+                return employees;
+            }
+            else
+            {
+                employees = _db.Employees.Skip(employeeCount - take).Take(take);
+                return employees;
+            }
+        }
+
+
+        //У меня ощущение, что с поиском Юзера по Id я перемудрил и EF сам может как-то определить что искать. Я ошибаюсь?
+        public async Task<Employee> GetByTerm(string term, CancellationToken token)
+        {
+            return await _db.Employees.FirstOrDefaultAsync(i => i.UserId == _db.Users.FirstOrDefault(u => u.FirstName == term).Id);
+        }
+
+
+        public async Task<Employee> UpdateItem(Employee item, CancellationToken token)
+        {
+            Employee employee = await _db.Employees.FirstOrDefaultAsync(i => i.Id == item.Id);
+            if (employee != null)
+            {
+                var itemDb = _db.Employees.FirstOrDefault(e => e.Id == item.Id);
+                
+
+                await _db.SaveChangesAsync();
+            }
+            return employee;
         }
     }
 }
