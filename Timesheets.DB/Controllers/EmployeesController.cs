@@ -7,20 +7,80 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Core.Models.Entities;
+<<<<<<< HEAD
 using Timesheets.DB.DAL.Context;
+=======
+using Timesheets.DB.DAL.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Timesheets.DB.Services.Interfaces;
+>>>>>>> f379f9d (Add authorization and authotication)
 
 namespace Timesheets.DB.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class EmployeesController : ControllerBase
     {
+<<<<<<< HEAD
         private readonly MyDbContext _context;
 
         public EmployeesController(MyDbContext context)
         {
             _context = context;
         }
+=======
+        private readonly IEmployeeRepo _repo;
+        private IUserService _userService;
+
+        public EmployeesController(IEmployeeRepo repo, IUserService userService)
+        {
+            _repo = repo;
+            _userService = userService;
+        }
+
+
+        //[AllowAnonymous]
+        //[HttpPost("authenticate")]
+        //public IActionResult Authenticate([FromQuery] string user, string password)
+        //{
+        //    TokenResponse token = _userService.Authenticate(user, password);
+        //    if (token is null)
+        //    {
+        //        return BadRequest(new { message = "Username or password is incorrect" });
+        //    }
+        //    SetTokenCookie(token.RefreshToken);
+        //    return Ok(token);
+        //}
+
+
+        //[AllowAnonymous]
+        //[HttpPost("refresh-token")]
+        //public IActionResult Refresh()
+        //{
+        //    string oldRefreshToken = Request.Cookies["refreshToken"];
+        //    string newRefreshToken = _userService.RefreshToken(oldRefreshToken);
+
+        //    if (string.IsNullOrWhiteSpace(newRefreshToken))
+        //    {
+        //        return Unauthorized(new { message = "Invalid token" });
+        //    }
+        //    SetTokenCookie(newRefreshToken);
+        //    return Ok(newRefreshToken);
+        //}
+
+
+        private void SetTokenCookie(string token)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddDays(7)
+            };
+            Response.Cookies.Append("refreshToken", token, cookieOptions);
+        }
+
+>>>>>>> f379f9d (Add authorization and authotication)
 
         // GET: api/Employees
         [HttpGet]

@@ -18,15 +18,32 @@ namespace Timesheets.DB.DAL.Implementation
 
         public async Task AddItemAsync(Employee item, CancellationToken token)
         {
+<<<<<<< HEAD
             _db.Employees.Add(item);
             await _db.SaveChangesAsync();
+=======
+            _db.Employees.AddAsync(item);
+            var addedEmployeeId = await _db.Employees.LastAsync();
+            await _db.SaveChangesAsync();
+
+            return addedEmployeeId.Id;
+>>>>>>> f379f9d (Add authorization and authotication)
         }
 
         public async Task DeleteItemAsync(Guid id, CancellationToken token)
         {
+<<<<<<< HEAD
             var item = _db.Employees.FirstOrDefault(u => u.Id == id);
             item.IsDeleted = true;
             await _db.SaveChangesAsync();
+=======
+            Employee employee = await _db.Employees.FirstOrDefaultAsync(u => u.Id == id);
+            if (employee != null)
+            {
+                employee.IsDeleted = true;
+                await _db.SaveChangesAsync();
+            }
+>>>>>>> f379f9d (Add authorization and authotication)
         }
 
         public async Task<IEnumerable<Employee>> GetAllAsync(CancellationToken token)

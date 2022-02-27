@@ -17,7 +17,13 @@ namespace Timesheets.DB.DAL.Implementation
 
         public Guid AddItem(User item)
         {
+<<<<<<< HEAD
             _db.Users.Add(item);
+=======
+            _db.Users.AddAsync(item);
+            await _db.SaveChangesAsync();
+            var addedUserId = await _db.Users.LastAsync();
+>>>>>>> f379f9d (Add authorization and authotication)
 
             return _db.Users.Last().Id;
         }
@@ -29,6 +35,7 @@ namespace Timesheets.DB.DAL.Implementation
             if (user != null)
             {
                 user.IsDeleted = true;
+                await _db.SaveChangesAsync();
             }
         }
 
@@ -71,11 +78,24 @@ namespace Timesheets.DB.DAL.Implementation
             User user = _db.Users.FirstOrDefault(i => i.Id == item.Id);
             if (user != null)
             {
+<<<<<<< HEAD
                 user.Comment = item.Comment;
                 user.LastName = item.LastName;
                 user.FirstName = item.FirstName;
                 user.MiddleName = item.MiddleName;
                 user.IsDeleted = item.IsDeleted;
+=======
+                var itemDb = _db.Users.FirstOrDefault(u => u.Id == item.Id);
+                itemDb.Comment = item.Comment;
+                itemDb.LastName = item.LastName;
+                itemDb.FirstName = item.FirstName;
+                itemDb.MiddleName = item.MiddleName;
+                itemDb.IsDeleted = item.IsDeleted;
+                itemDb.Password = item.Password;
+                itemDb.RefreshToken = item.RefreshToken;
+
+                await _db.SaveChangesAsync();
+>>>>>>> f379f9d (Add authorization and authotication)
             }
             return user;
         }
