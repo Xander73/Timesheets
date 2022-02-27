@@ -73,10 +73,16 @@
 //            throw new NotImplementedException();
 //        }
 
-//        public void DeleteItem(int id, CancellationToken token)
-//        {
-//            data.Remove(data.Where(i => i.Id == id).FirstOrDefault());
-//        }
+
+        public void DeleteItem(int id)
+        {
+            Person person = Get(id);
+            if (person != null)
+            {
+                data.Remove(person);
+            }
+        }
+ main
 
 //        public Task DeleteItemAsync(Guid id, CancellationToken token)
 //        {
@@ -90,16 +96,50 @@
 //            throw new NotImplementedException();
 //        }
 
-//        public int UpdateItem(Person item, CancellationToken token)
-//        {
-//            int index = data.IndexOf(data.Where(x => x.Id == item.Id).FirstOrDefault());
-//            data[index] = item;
-//            return data[index].Id;
-//        }
 
-//        public Task UpdateItemAsync(Person item, CancellationToken token)
-//        {
-//            throw new NotImplementedException();
-//        }
-//    }
-//}
+        public Person Get(int id)
+        {
+            return data.FirstOrDefault(i => i.Id == id);
+        }
+
+
+        public IEnumerable<Person> GetSomePersons(int skip, int take)
+        {
+            int personsCount = data.Count;
+            IEnumerable<Person> persons;
+            if (skip < personsCount)
+            {
+                persons = data.Skip(skip).Take(take);
+
+                return persons;
+            }
+            else
+            {
+                persons = data.Skip(personsCount - take).Take(take);
+                return persons;
+            }
+        }
+
+
+        public Person GetByTerm(string term)
+        {
+            return data.FirstOrDefault(i => i.FirstName == term);
+        }
+
+
+        public Person UpdateItem(Person item)
+        {
+            Person person = data.FirstOrDefault(i => i.Id == item.Id);
+            if (person != null)
+            {
+                person.Age = item.Age;
+                person.FirstName = item.FirstName;
+                person.LastName = item.LastName;
+                person.Email = item.Email;
+                person.Company = item.Company;
+            }
+            return person;
+        }
+    }
+}
+ main
