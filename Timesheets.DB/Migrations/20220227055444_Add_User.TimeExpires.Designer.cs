@@ -11,8 +11,8 @@ using Timesheets.DB.DAL.Context;
 namespace Timesheets.DB.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20220214211355_Initial")]
-    partial class Initial
+    [Migration("20220227055444_Add_User.TimeExpires")]
+    partial class Add_UserTimeExpires
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -64,6 +64,17 @@ namespace Timesheets.DB.Migrations
                     b.Property<string>("MiddleName")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RefreshToken")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("TimeExpires")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 

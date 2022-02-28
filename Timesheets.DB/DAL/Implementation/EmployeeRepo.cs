@@ -1,5 +1,6 @@
 ﻿using Core.Models.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using Timesheets.DB.DAL.Context;
 using Timesheets.DB.DAL.Interfaces;
 
@@ -20,6 +21,7 @@ namespace Timesheets.DB.DAL.Implementation
         {
             _db.Employees.AddAsync(item);
             var addedEmployeeId = await _db.Employees.LastAsync();
+            await _db.SaveChangesAsync();
 
             return addedEmployeeId.Id;
         }
@@ -31,6 +33,7 @@ namespace Timesheets.DB.DAL.Implementation
             if (employee != null)
             {
                 employee.IsDeleted = true;
+                await _db.SaveChangesAsync();
             }
         }
 

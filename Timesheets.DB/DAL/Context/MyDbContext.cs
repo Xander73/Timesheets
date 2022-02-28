@@ -7,7 +7,7 @@ namespace Timesheets.DB.DAL.Context
     {
         public MyDbContext(DbContextOptions options) : base(options)
         {
-            Database.EnsureCreated();
+
         }
 
         public DbSet<User> Users { get; set; }

@@ -2,19 +2,66 @@
 using Microsoft.AspNetCore.Mvc;
 using Core.Models.Entities;
 using Timesheets.DB.DAL.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Timesheets.DB.Services.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace Timesheets.DB.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class EmployeesController : ControllerBase
     {
         private readonly IEmployeeRepo _repo;
+        private IUserService _userService;
 
-        public EmployeesController(IEmployeeRepo repo)
+        public EmployeesController(IEmployeeRepo repo, IUserService userService)
         {
             _repo = repo;
-        }        
+            _userService = userService;
+        }
+
+
+        //[AllowAnonymous]
+        //[HttpPost("authenticate")]
+        //public IActionResult Authenticate([FromQuery] string user, string password)
+        //{
+        //    TokenResponse token = _userService.Authenticate(user, password);
+        //    if (token is null)
+        //    {
+        //        return BadRequest(new { message = "Username or password is incorrect" });
+        //    }
+        //    SetTokenCookie(token.RefreshToken);
+        //    return Ok(token);
+        //}
+
+
+        //[AllowAnonymous]
+        //[HttpPost("refresh-token")]
+        //public IActionResult Refresh()
+        //{
+        //    string oldRefreshToken = Request.Cookies["refreshToken"];
+        //    string newRefreshToken = _userService.RefreshToken(oldRefreshToken);
+
+        //    if (string.IsNullOrWhiteSpace(newRefreshToken))
+        //    {
+        //        return Unauthorized(new { message = "Invalid token" });
+        //    }
+        //    SetTokenCookie(newRefreshToken);
+        //    return Ok(newRefreshToken);
+        //}
+
+
+        private void SetTokenCookie([MinLength(10), StringLength(100)] string token)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddDays(7)
+            };
+            Response.Cookies.Append("refreshToken", token, cookieOptions);
+        }
 
 
         [HttpGet]

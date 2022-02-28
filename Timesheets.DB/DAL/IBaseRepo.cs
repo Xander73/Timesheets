@@ -1,4 +1,4 @@
-﻿
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Timesheets.DB.DAL
 {
@@ -9,14 +9,14 @@ namespace Timesheets.DB.DAL
         Task<T> Get(Guid id, CancellationToken token);
 
 
-        Task<T> GetByTerm(string term, CancellationToken token);
+        Task<T> GetByTerm([MinLength(3), StringLength(50)]string term, CancellationToken token);
 
 
-        Task<IEnumerable<T>> GetSomePersons(int skip, int take, CancellationToken token);
+        Task<IEnumerable<T>> GetSomePersons([Range(0, int.MaxValue)]int skip, [Range(1, int.MaxValue)] int take, CancellationToken token);
 
 
         Task<Guid> AddItem(T item, CancellationToken token);
-
+        
 
         Task<T> UpdateItem(T item, CancellationToken token);
 

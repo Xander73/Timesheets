@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Timesheets.DB.DAL.Context;
 
@@ -10,9 +11,10 @@ using Timesheets.DB.DAL.Context;
 namespace Timesheets.DB.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220226191722_User.AddTimeLastRefresh")]
+    partial class UserAddTimeLastRefresh
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.2");
@@ -71,7 +73,7 @@ namespace Timesheets.DB.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<long>("TimeExpires")
+                    b.Property<long>("TimeLastRefresh")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");

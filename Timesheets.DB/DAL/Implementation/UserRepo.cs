@@ -1,5 +1,6 @@
 ﻿using Core.Models.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using Timesheets.DB.DAL.Context;
 using Timesheets.DB.DAL.Interfaces;
 
@@ -19,6 +20,7 @@ namespace Timesheets.DB.DAL.Implementation
         public async Task<Guid> AddItem(User item, CancellationToken token)
         {
             _db.Users.AddAsync(item);
+            await _db.SaveChangesAsync();
             var addedUserId = await _db.Users.LastAsync();
 
             return addedUserId.Id;
@@ -31,6 +33,7 @@ namespace Timesheets.DB.DAL.Implementation
             if (user != null)
             {
                 user.IsDeleted = true;
+                await _db.SaveChangesAsync();
             }
         }
 
@@ -79,6 +82,8 @@ namespace Timesheets.DB.DAL.Implementation
                 itemDb.FirstName = item.FirstName;
                 itemDb.MiddleName = item.MiddleName;
                 itemDb.IsDeleted = item.IsDeleted;
+                itemDb.Password = item.Password;
+                itemDb.RefreshToken = item.RefreshToken;
 
                 await _db.SaveChangesAsync();
             }
