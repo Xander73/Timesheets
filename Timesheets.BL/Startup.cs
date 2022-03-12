@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Timesheets.DB.DAL.Context;
+using Timesheets.DB.DAL.Implementation;
+using Timesheets.DB.DAL.Interfaces;
 using Timesheets.DB.Services.Implementations;
 using Timesheets.DB.Services.Interfaces;
 
@@ -20,7 +24,6 @@ namespace Timesheets.BL
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IUserService, UserService>();
             services.AddControllers();
             services.AddAuthentication(x =>
             {
@@ -41,8 +44,14 @@ namespace Timesheets.BL
                     };
                 });
             services.AddCors();
-            
 
+            //services.AddSingleton<IPersonRepo, PersonRepo>();
+            services.AddScoped<IEmployeeRepo, EmployeeRepo>();
+            services.AddScoped<IUserRepo, UserRepo>();
+            services.AddScoped<IInvoiceRepo, InvoiceRepo>();
+            services.AddScoped<ISheetRepo, SheetRepo>();
+            var connectionString = Configuration.GetConnectionString("MyDbConnection");
+            services.AddDbContext<MyDbContext>(options => options.UseSqlite(connectionString));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Geekbrains.AuSample", Version = "v1" });
@@ -70,8 +79,8 @@ namespace Timesheets.BL
                     }
                 });
             });
-
         }
+    
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

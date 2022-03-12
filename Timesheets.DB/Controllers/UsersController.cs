@@ -20,7 +20,6 @@ namespace Timesheets.DB.Controllers
         {
             _repo = repo;
             _userService = userService;
-
         }
 
 

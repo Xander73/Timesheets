@@ -12,7 +12,6 @@ namespace Timesheets.DB.Services.Implementations
 {
     public sealed class UserService : IUserService
     {
-        //private IDictionary<string, AuthResponse> _users = new Dictionary<string, AuthResponse>();
         MyDbContext _dbContext;
         IUserRepo _repo;
 
