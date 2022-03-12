@@ -2,8 +2,7 @@
 
 namespace Timesheets.DB.DAL.Interfaces
 {
-    public interface IPersonRepo : IBaseRepo<Person>
+    public interface IUserRepo : IBaseRepo<User>
     {
-
     }
 }

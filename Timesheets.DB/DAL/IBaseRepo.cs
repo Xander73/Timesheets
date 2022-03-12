@@ -1,7 +1,10 @@
-﻿namespace Timesheets.DB.DAL
+﻿
+
+namespace Timesheets.DB.DAL
 {
-    public interface IBaseRepo<T>
+    public interface IBaseRepo<T> where T : class
     {
+
         List<T> GetAll();
         
         T Get(int id);
@@ -11,14 +14,17 @@
 
 
         IEnumerable<T> GetSomePersons(int skip, int take);
+ main
 
 
-        int AddItem(T item);
+        Task<Guid> AddItem(T item, CancellationToken token);
+
 
 
         T UpdateItem(T item);
+ main
 
 
-        void DeleteItem(int id);
+        Task DeleteItem(Guid id, CancellationToken token);
     }
 }

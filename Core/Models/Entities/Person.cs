@@ -1,4 +1,4 @@
-﻿namespace Core.Model
+﻿namespace Core.Models.Entities
 {
     public class Person
     {

@@ -1,3 +1,4 @@
+
 ﻿using Core.Model;
 using Microsoft.AspNetCore.Mvc;
 using Timesheets.DB.DAL.Interfaces;
@@ -104,3 +105,4 @@ namespace Timesheets.DB.Controllers
         }
     }
 }
+ main

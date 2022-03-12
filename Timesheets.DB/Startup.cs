@@ -1,4 +1,6 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using Timesheets.DB.DAL.Context;
 using Timesheets.DB.DAL.Implementation;
 using Timesheets.DB.DAL.Interfaces;
 
@@ -18,7 +20,11 @@ namespace Timesheets.DB
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddSingleton<IPersonRepo, PersonRepo>();
+            //services.AddSingleton<IPersonRepo, PersonRepo>();
+            services.AddScoped<IEmployeeRepo, EmployeeRepo>();
+            services.AddScoped<IUserRepo, UserRepo>();
+            var connectionString = Configuration.GetConnectionString("MyDbConnection");
+            services.AddDbContext<MyDbContext>(options => options.UseSqlite(connectionString));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Timesheets.DB", Version = "v1" });
