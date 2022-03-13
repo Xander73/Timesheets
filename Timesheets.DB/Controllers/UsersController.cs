@@ -67,7 +67,7 @@ namespace Timesheets.DB.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers(CancellationToken token)
+        public async Task<ActionResult<List<User>>> GetUsers(CancellationToken token)
         {
             IEnumerable<User> users = await _repo.GetAll(token);
             if (users == null)

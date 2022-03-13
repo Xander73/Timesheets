@@ -20,8 +20,8 @@ namespace Timesheets.DB.DAL.Implementation
         public async Task<Guid> AddItem(Employee item, CancellationToken token)
         {
             _db.Employees.AddAsync(item);
-            var addedEmployeeId = await _db.Employees.LastAsync();
             await _db.SaveChangesAsync();
+            var addedEmployeeId = await _db.Employees.LastAsync();
 
             return addedEmployeeId.Id;
         }
@@ -38,7 +38,7 @@ namespace Timesheets.DB.DAL.Implementation
         }
 
 
-        public async Task<IEnumerable<Employee>> GetAll(CancellationToken token) => await _db.Employees.ToListAsync();
+        public async Task<List<Employee>> GetAll(CancellationToken token) => await _db.Employees.ToListAsync();
 
 
         public async Task<Employee> Get(Guid id, CancellationToken token)
@@ -47,7 +47,7 @@ namespace Timesheets.DB.DAL.Implementation
         }
 
 
-        public async Task<IEnumerable<Employee>> GetSomePersons(int skip, int take, CancellationToken token)
+        public async Task<IEnumerable<Employee>> GetSomeItems(int skip, int take, CancellationToken token)
         {
             int employeeCount = await _db.Users.CountAsync();
             IEnumerable<Employee> employees;

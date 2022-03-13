@@ -38,7 +38,7 @@ namespace Timesheets.DB.DAL.Implementation
         }
 
 
-        public async Task<IEnumerable<User>> GetAll(CancellationToken token) => await _db.Users.ToListAsync();
+        public async Task<List<User>> GetAll(CancellationToken token) => await _db.Users.ToListAsync();
 
 
         public async Task<User> Get(Guid id, CancellationToken token)
@@ -47,7 +47,7 @@ namespace Timesheets.DB.DAL.Implementation
         }
 
 
-        public async Task<IEnumerable<User>> GetSomePersons(int skip, int take, CancellationToken token)
+        public async Task<IEnumerable<User>> GetSomeItems(int skip, int take, CancellationToken token)
         {
             int userCount = await _db.Users.CountAsync();
             IEnumerable<User> users;

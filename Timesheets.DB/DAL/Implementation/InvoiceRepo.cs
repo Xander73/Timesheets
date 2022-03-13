@@ -38,28 +38,28 @@ namespace Timesheets.DB.DAL.Implementation
         }
 
 
-        public async Task<IEnumerable<Invoice>> GetAll(CancellationToken token) => await _db.Invoices.ToListAsync();
+        public async Task<List<Invoice>> GetAll(CancellationToken token) => await _db.Invoices.Include(i => i.Sheets).ToListAsync();
 
 
         public async Task<Invoice> Get(Guid id, CancellationToken token)
         {
-            return await _db.Invoices.FirstOrDefaultAsync(i => i.Id == id);
+            return await _db.Invoices.Include(i => i.Sheets).FirstOrDefaultAsync(i => i.Id == id);
         }
 
 
-        public async Task<IEnumerable<Invoice>> GetSomePersons(int skip, int take, CancellationToken token)
+        public async Task<IEnumerable<Invoice>> GetSomeItems(int skip, int take, CancellationToken token)
         {
             int sheetCount = await _db.Sheets.CountAsync();
             IEnumerable<Invoice> invoices;
             if (skip < sheetCount)
             {
-                invoices = _db.Invoices.Skip(skip).Take(take);
+                invoices = _db.Invoices.Include(i => i.Sheets).Skip(skip).Take(take);
 
                 return invoices;
             }
             else
             {
-                invoices = _db.Invoices.Skip(sheetCount - take).Take(take);
+                invoices = _db.Invoices.Include(i => i.Sheets).Skip(sheetCount - take).Take(take);
                 return invoices;
             }
         }
@@ -67,7 +67,7 @@ namespace Timesheets.DB.DAL.Implementation
 
         public async Task<Invoice> UpdateItem(Invoice item, CancellationToken token)
         {
-            Invoice invoice = await _db.Invoices.FirstOrDefaultAsync(i => i.Id == item.Id);
+            Invoice invoice = await _db.Invoices.Include(i => i.Sheets).FirstOrDefaultAsync(i => i.Id == item.Id);
             if (invoice != null)
             {
                 invoice.IsDeleted = item.IsDeleted;

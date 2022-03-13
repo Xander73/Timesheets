@@ -20,13 +20,17 @@ namespace Timesheets.BL.Domain.Aggregates
             return new Invoice ()
             {
                 Id = Guid.NewGuid (),
-                Date = DateTime.Now
+                Date = DateTime.Now.Date
             };
         }
 
 
         public void AddSheet (Sheet sheet)
         {
+            if (sheet == null)
+            {
+                return;
+            }
             Sheets.Add (sheet);
         }
 
